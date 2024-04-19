@@ -1,34 +1,31 @@
 # Shodan Bulk Query
 
-Skrypt ~~skradziony~~ zainspirowany przez:
+This script is ~~stolen~~ inspired by:
 https://github.com/emresaglam/shodan-bulk-ip-query
 
-Jego przeznaczeniem jest ułatwienie wyszukiwania kontaktów do osób odpowiedzialnych za podatne urządzenia powiązane z adresami IP. Do zastosowania przy masowych wysyłkach pokroju Exchange, Citrix, Fortigate. Dla jego stosowania konieczne jest konto na Shodanie ze statusem "Membership" (można upolować za 5$ co jakiś czas), pozwala ono na używanie API. Klucz można znaleźć w https://account.shodan.io
+Its purpose is to facilitate the search for entities responsible for devices associated with IP addresses. To use it, a Shodan account with a "Membership" status is necessary (which can sometimes be snagged for $5), allowing the use of the API. The key can be found at https://account.shodan.io.
 
-**UWAGA** - limit zapytań dla planu "Memebership" wynosi 100 adresów IP miesięcznie, chociaż nie jest jasne, co liczy się do zużycia creditsów, jak na razie przetestowałem skrytp na kilkuset adresach i nie policzyło mi nic za to:
+**NOTE** - the query limit for the "Membership" plan is 100 IP addresses per month, although it's unclear what counts toward credit usage. As of now, I have tested the script on several hundred addresses in one day and it has not charged me for it:
 https://help.shodan.io/the-basics/credit-types-explained
 
-Stan creditsów można monitorować tutaj:
+Credit status can be monitored here:
 https://developer.shodan.io/dashboard
 
-# Wymagania
+# Requirements
 * `pip3 install -r requirements`
-* Wklej swój klucz API do pliku `shodan_api_key.txt`.
-* Przygotuj listę adresów IP w pliku `iplist.txt`, każdy adres w nowej linii. 
+* Paste your API key into the file `shodan_api_key.txt`.
+* Prepare a list of IP addresses in the file `iplist.txt`, each address on a new line.
 
-# Zastosowanie
-
-`python3 shodanQuery.py` zaczyta listę IP z  `iplist.txt`, następnie zacznie pobierać informacje dla każdego adresu po kolei i wyświetlać informacje w terminalu:
+# Usage
+Run `python3 shodanQuery.py` which reads the IP list from `iplist.txt`, then begins to retrieve information for each address sequentially and displays the information in the terminal:
 ```
 [INFO] - fetching host 195.117.120.97, progress: 42.3%
 ```
-W przypadku błędu pojawia się komunikat o przyczynie, np. brak IP w bazie Shodana, błąd połączenia, lub za szybkie requesty (w tym wypadku odpalamy skrypt jeszcze raz z `-d` i podajemy wartość pauzy w sekundach, domyślnie jest to 1 )
+In case of an error, a message appears about the cause, e.g., no IP in the Shodan database, connection error, or too many rapid requests (in this case, rerun the script with `-d` and specify the pause duration in seconds, default is 1).
 
-Skrypt bazowo wyrzuca dwa pliki do folderu output:
-* `shodan_results_TIMESTAMP.json` - zawiera pełny zrzut informacji o adresach IP
-* `shodan_results_TIMESTAMP.xlsx` - zawiera podstawowe informacje pomocne w ustaleniu adresów kontaktowych. Jeżeli Shodan nie ma wszystkich danych, to w odpowiednich komórkach pojawia się `-`. Jeżeli adres IP w ogóle nie występuje w bazie, do wszystkie komórki przyjmują wartości `NoData`. Dodatkowo dla xlsx są pobierane adresy abuse z WHOIS. Niestety narazie skrypt nie korzysta z RIPE, także ta funkcjonalność trochę ssie...
+By default, the script outputs two files to the output folder:
+* `shodan_results_TIMESTAMP.json` - contains a full dump of information about the IP addresses
+* `shodan_results_TIMESTAMP.xlsx` - contains basic information helpful in establishing entities behind addresses. If Shodan lacks data about specific IP, the corresponding cells show `-`. If an IP address is not in the database at all, then all cells take the value `NoData`. Additionally, for xlsx, abuse addresses are fetched from WHOIS. Unfortunately, the script does not currently use RIPE, so this functionality is somewhat lacking...
 
-Dodatkowo jeżeli podczas pobierania informacji pojawią się IP, dla których wyskoczą błędy, ich lista zapisywana jest w:
+Furthermore, if errors occur while retrieving information for certain IPs, a list of them is saved in:
 `shodan_results_TIMESTAMP.txt`
-
-

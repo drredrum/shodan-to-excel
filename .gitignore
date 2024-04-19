@@ -1,0 +1,6 @@
+# ignore output folder
+output
+
+# ignore api key and IP list
+iplist.txt
+shodan_api_key.txt
